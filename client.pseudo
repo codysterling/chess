@@ -1,0 +1,42 @@
+// Client pseudocode
+// This could be through CLI, GUI, with Python somehow external if we want later?
+
+// Generate starting board
+func generate_starting_board() {
+	// board = 8x8 array
+	// fill in with pieces so it looks like:
+	// ["bR","bN","bB",...]
+	// ["bP","bP",...]
+	// ["xx","xx",...]
+	// ["xx","xx",...]
+	// ["xx","xx",...]
+	// ["xx","xx",...]
+	// ["wP","wP",...]
+	// ["wR","wN","wB",...]
+	return board
+}
+
+// Decide if player is white, black, or random
+
+// Iterate white/black moves
+// After each move, update castling/en passant/check flags, check for checkmate to end game
+// On player move, check if it's legal (with check_move() defined in engine code) then make it
+
+func parse_player_move(board,move) {
+	// Parse the player move in normal chess notation ("a3", "Nc3", ...) to something easier for us: [Pa2,Pa3], [Na1,Nc3]
+	// If it's unclear (e.g. two knights can go to same location) then we need to exit this and reprompt the player for a more clear notation
+	// Alternatively if we have a GUI we can just ignore this part I guess since the GUI handles start/ending location
+}
+
+func make_move(board,move) {
+	// This just updates the board state with the given move, at this point it should have already been check for legality
+	start_loc = move[0]
+	moved_piece = board[start_loc]
+	end_loc = move[1]
+
+	board[start_loc] = "xx" // Blank square now
+	board[end_loc] = moved_piece
+	return board
+}
+
+

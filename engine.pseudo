@@ -1,0 +1,78 @@
+// Engine pseudocode
+// Goal: Give it a state of the board and which color to move, have it return a move to make
+// E.g.: engine_move(board,color) => [Nb1,Na3]
+// Board should be 8x8 array with pieces as array elements of the form "wP", "bN", etc. for easy parsing
+
+func get_all_moves(board,color) {
+	// Figure out all possible moves for our pieces based on basic piece move logic
+	// Somewhere here we can check some global vars about castling and en passant
+	moves_list = []
+	for (square=1,square<64,square++) { // Going through all 64 squares
+		if (board[square][0] = color) { // Checking if piece is the right color
+			piece_moves = get_piece_moves(board,square) // This function should return all possible moves
+			moves_list += piece_moves
+		}
+	}
+	return moves_list // Example: [[Pa2,Pa3],[Pa2,Pa4],...]
+}
+
+func get piece_moves(board,square) {
+	piece_color = board[square][0]
+	piece_type = board[square][1]
+	moves_list = []
+
+	if (piece_type == "P") {
+		...
+	}
+
+	if (piece_type == "N") {
+		...
+	}
+
+	...
+
+	return moves_list
+}
+
+func check_move(board,move) {
+	// Check if a move is legal
+	// This is separate from get_all_moves because we need to check the player's move as well separately
+	// Maybe this should be in client part actually
+
+	// Things to check:
+	// Pieces being in the way, landing on your own color, if you start/end in check, etc.
+	if ...
+		return 0 // Legal move
+	else
+		return 1 // Illegal move
+}
+
+func check_legal_moves(board,moves_list) {
+	// Check all legal moves
+	legal_moves = []
+	for move in moves_list {
+		if (check_move(board,move) == 0) { // Is legal
+			legal_moves += move
+		else
+			pass
+		}
+	return legal_moves
+}
+
+func best_move(board,legal_moves) {
+	// Now with a list of legal moves, we can try to figure out the best one
+	// Maybe we can make some dict to match each move with some numerical value of its "goodness"
+	// As a basic idea in the beginning we could just return a random move from the list
+	// Otherwise we can try to iterate e.g. 1 move ahead, make sure we don't get immediately captured or something
+	// More advanced: figure out our "score" with piece values, see if it goes up/down after some moves
+	return chosen_move
+}
+
+func engine_runner(board,color) {
+	// This should be the function that we actually run in the client code
+	// It will return a move, then we have another function that executes moves (same for the player)
+	all_moves_list = get_all_moves(board_color)
+	legal_moves_list = check_legal_moves(board,all_moves_list)
+	engine_move = best_move(board,legal_moves_list)
+	return engine_move
+}

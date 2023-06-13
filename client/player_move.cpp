@@ -15,6 +15,17 @@ namespace move {
 		parsed_move.end[0] = 5;
 		parsed_move.end[1] = 0;
 
+/*
+		input: Na4
+		a2
+
+		char[0] == N
+		figure out that our knights are at C3 (2,4) and G1 (0,6)
+		big_move_func(2,4) + big_move_func(0,6) => [[2,4] => [0,3],...]
+		now we check that list for a4 final position (0,3)
+		-- write function to check if there is a knight that can reach a4 (basically inverse of above function)
+		*/
+
 		return parsed_move;
 	} // end function
 

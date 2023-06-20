@@ -2,6 +2,7 @@
 #include <fstream>
 #include <regex>
 #include <filesystem>
+#include <vector>
 
 using namespace std;
 
@@ -10,13 +11,15 @@ using namespace std;
 #include "client/structs.cpp"
 #include "client/generate_board.cpp"
 #include "client/print_board.cpp"
+#include "client/find_moves.cpp"
+#include "client/parse_input.cpp"
 #include "client/player_move.cpp"
 #include "engine/engine_move.cpp"
 
-void clrscr() { // Hacky way to clear terminal
-	// From: https://stackoverflow.com/questions/17335816/clear-screen-using-c
-	cout << "\033[2J\033[1;1H";
-}
+// void clrscr() { // Hacky way to clear terminal
+// 	// From: https://stackoverflow.com/questions/17335816/clear-screen-using-c
+// 	cout << "\033[2J\033[1;1H";
+// }
 
 // Run program
 int main() {
@@ -24,8 +27,9 @@ int main() {
 	cout << "Welcome to Chess++!" << endl;
 	cout << "Press Enter for a new game, otherwise input a path to a FEN file or the FEN sequence here." << endl;
 	string start_input;
-	//getline(cin, start_input);
-	start_input = "fen.txt"; //// faster testing of FEN input, remove later
+	// getline(cin, start_input);
+	start_input = "c_fen.txt"; //// faster testing of FEN input, remove later
+	// start_input = ""; //// faster testing of blank input, remove later
 
 	// Checking input to parse FEN
 	// Right now only supports static board state, later add move/castle/etc.
@@ -48,7 +52,6 @@ int main() {
 	board::PrintBoard(current_board);
 	cout << endl;
 
-
 	// Set both move functions here for 2P, then change one to engine if needed
 	auto white_move = move::PlayerMove;
 	auto black_move = move::PlayerMove;
@@ -58,7 +61,8 @@ int main() {
 
 	while (cin) {
 		int play_mode;
-		cin >> play_mode;
+		// cin >> play_mode;
+		play_mode = 2;
 		if (play_mode == 1) { // vs. engine
 			cout << "Starting engine game..." << endl;
 			cout << "Which color would you like to play: w(hite), b(lack), r(andom)?" << endl;
@@ -99,6 +103,7 @@ int main() {
 		}
 	}
 
+	clrscr();
 	// Main game loop
 	while (current_board.checkmate == 2) {
 		if (current_board.color == 0) { // White move

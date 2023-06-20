@@ -64,30 +64,39 @@ namespace board {
 	} // end function
 
 	ChessBoard MakeMove(ChessBoard current_board, move::ChessMove given_move) {
+
 		// Check castling move, assume that it's already been checked to be legal
-		if (current_board.squares[given_move.start[0]][given_move.start[1]]) == 'wK' && given_move.start[0] == 7 && given_move.start[1] == 4 { // White castling
-			if (given_move.end[1] == 2 || given_move.end[1] == 0) { // Queen-side
-				current_board.squares[7][2] == 'wK';
-				current_board.squares[7][3] == 'wR';
-			} else if (given_move.end[1] == 6 || given_move.end[1] == 7) { // King-side
-				current_board.squares[7][6] == 'wK';
-				current_board.squares[7][5] == 'wR';
-			}
-		} else if (current_board.squares[given_move.start[0]][given_move.start[1]]) == 'bK' && given_move.start[0] == 0 && given_move.start[1] == 4 { // Black castling
-			if (given_move.end[1] == 2 || given_move.end[1] == 0) { // Queen-side
-				current_board.squares[0][2] == 'bK';
-				current_board.squares[0][3] == 'bR';
-			} else if (given_move.end[1] == 6 || given_move.end[1] == 7) { // King-side
-				current_board.squares[0][6] == 'bK';
-				current_board.squares[0][5] == 'bR';
-			}
+		if (current_board.squares[given_move.start[0]][given_move.start[1]] == "wK" && given_move.start[0] == 7 && given_move.start[1] == 4 && (given_move.end[1] == 2 || given_move.end[1] == 0)) { // White Queen-side
+			current_board.squares[7][4] = "  ";
+			current_board.squares[7][0] = "  ";
+			current_board.squares[7][2] = "wK";
+			current_board.squares[7][3] = "wR";
+			current_board.white_castle = 0;
+		} else if (current_board.squares[given_move.start[0]][given_move.start[1]] == "wK" && given_move.start[0] == 7 && given_move.start[1] == 4 && (given_move.end[1] == 6 || given_move.end[1] == 7)) { // White King-side
+			current_board.squares[7][4] = "  ";
+			current_board.squares[7][7] = "  ";
+			current_board.squares[7][6] = "wK";
+			current_board.squares[7][5] = "wR";
+			current_board.white_castle = 0;
+		} else if (current_board.squares[given_move.start[0]][given_move.start[1]] == "bK" && given_move.start[0] == 0 && given_move.start[1] == 4 && (given_move.end[1] == 2 || given_move.end[1] == 0)) { // Black Queen-side
+			current_board.squares[0][4] = "  ";
+			current_board.squares[0][0] = "  ";
+			current_board.squares[0][2] = "bK";
+			current_board.squares[0][3] = "bR";
+			current_board.black_castle = 0;
+		} else if (current_board.squares[given_move.start[0]][given_move.start[1]] == "bK" && given_move.start[0] == 0 && given_move.start[1] == 4 && (given_move.end[1] == 6 || given_move.end[1] == 7)) { // Black King-side
+			current_board.squares[0][4] = "  ";
+			current_board.squares[0][7] = "  ";
+			current_board.squares[0][6] = "bK";
+			current_board.squares[0][5] = "bR";
+			current_board.black_castle = 0;
 		} else { // Not castling, so do normal move
 			current_board.squares[given_move.end[0]][given_move.end[1]] = current_board.squares[given_move.start[0]][given_move.start[1]];
 			current_board.squares[given_move.start[0]][given_move.start[1]] = "  ";
 		}
 
 		// Update color and return board
-		current_board.color =+ (current_board.color + 1)%2;
+		current_board.color = (current_board.color + 1)%2;
 		return(current_board);
 	} // end function
 

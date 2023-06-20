@@ -1,23 +1,32 @@
 namespace board {
 
 	void PrintBoard(ChessBoard current_board) {
-		for (int i=0; i<8; i++) {
-			for (int j=0; j<8; j++) {
-				cout << "[" << current_board.squares[i][j] << "] ";
+		// if (current_board.color == 0) { // printing from White PoV
+		if (current_board.color == 0 || current_board.color == 1) {
+			for (int i=0; i<8; i++) {
+				cout << 8-i << " ";
+				for (int j=0; j<8; j++) {
+					cout << "[" << current_board.squares[i][j] << "]";
+				}
+				cout << endl;
 			}
-			cout << endl;
+			cout << "   a   b   c   d   e   f   g   h" << endl;
+		// } else { // printing from Black PoV
+		// 	for (int i=7; i>=0; i--) {
+		// 		cout << 8-i << " ";
+		// 		for (int j=7; j>=0; j--) {
+		// 			cout << "[" << current_board.squares[i][j] << "]";
+		// 		}
+		// 		cout << endl;
+		// 	}
+		// 	cout << "   h   g   f   e   d   c   b   a" << endl;
 		}
+		
 		cout << endl;
 	} // end function
 
 	void PrintBoardFull(ChessBoard current_board) {
-		for (int i=0; i<8; i++) {
-			for (int j=0; j<8; j++) {
-				cout << "[" << current_board.squares[i][j] << "] ";
-			}
-			cout << endl;
-		}
-		cout << endl;
+		PrintBoard(current_board);
 		
 		cout << "Color: " << current_board.color << endl;
 		cout << "Check: " << current_board.check << endl;

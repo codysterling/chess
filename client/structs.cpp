@@ -80,8 +80,31 @@ namespace move {
 		}
 	}
 
-	void PrintMove(ChessMove p_move) {
+	void PrintMove(ChessMove p_move) { // Prints move verbosely
 		cout << "Move: " << IntToFile(p_move.start[1]) << 8-p_move.start[0] << " to " << IntToFile(p_move.end[1]) << 8-p_move.end[0] << endl;
 	}
+
+	void ListMoves(board::ChessBoard current_board, vector<ChessMove> move_list) {
+		for (int i = 0; i < move_list.size(); i++) {
+			ChessMove t_move = move_list[i];
+			int start_rank = t_move.start[0];
+			int start_file = t_move.start[1];
+			string piece;
+			if (current_board.squares[start_rank][start_file].substr(1,1) != "P") {
+				piece = current_board.squares[start_rank][start_file].substr(1,1);
+			}
+			int end_rank = t_move.end[0];
+			int end_file = t_move.end[1];
+
+			cout << i+1 << ": " << piece << IntToFile(start_file) << 8-start_rank << " -> " << IntToFile(end_file) << 8-end_rank << endl;
+		}
+	}
+
+	inline bool operator==(const ChessMove& lhs, const ChessMove& rhs)
+		{
+				// return lhs.my_struct2 == rhs.my_struct2 && lhs.an_int == rhs.an_int;
+				// return 1;
+				return lhs.start[0] == rhs.start[0] && lhs.start[1] == rhs.start[1] && lhs.end[0] == rhs.end[0] && lhs.end[1] == rhs.end[1];
+		}
 
 } // end namespace

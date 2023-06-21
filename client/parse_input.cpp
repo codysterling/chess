@@ -11,11 +11,9 @@ namespace move {
 
 		ChessMove parsed_move; // Initialize the move that we return later
 
-		regex r_piece = regex("[BKNPQR]");
-		regex r_square = regex("[a-h][1-8]");
-		regex r_normal = regex("[BKNQR][a-h][1-8]");
-
-		vector<ChessMove> move_vec;
+		// regex r_piece = regex("[BKNPQR]");
+		// regex r_square = regex("[a-h][1-8]");
+		// regex r_normal = regex("[BKNQR][a-h][1-8]");
 
 		string piece = "";
 		int start_rank = 8;
@@ -84,23 +82,66 @@ namespace move {
 			int rank = 8 - stoi(player_input.substr(1,1));
 			int file = FileToInt(player_input.substr(0,1));
 			cout << "coords: " << rank << "," << file << endl;
-			if (current_board.squares[rank][file] == "  ") { // If square is empty, do pawn move
-				cout << "square is empty, doing pawn move";
+			if (current_board.squares[rank][file] == "  ") { // If end square is empty, do pawn move
+				cout << "End cxsquare is empty, doing pawn move";
 				piece = "P";
 				end_rank = rank;
 				end_file = file;
 			} else { // Square isn't empty
 				if ((current_board.color == 0 && current_board.squares[rank][file][0] == 'w') || (current_board.color == 1 && current_board.squares[rank][file][0] == 'b')) { // Return possible moves if it's your color
 					cout << "occupied with color, get moves" << endl;
-					// function get_moves();
-				} else {
+					//// Manually adding a move_vec list to test
+					vector<ChessMove> move_vec;
+					ChessMove m1 = {{6,1},{5,2}};
+					ChessMove m2 = {{7,4},{7,6}};
+					ChessMove m3 = {{6,2},{5,1}};
+					move_vec.push_back(m1);
+					move_vec.push_back(m2);
+					move_vec.push_back(m3);
+					cout << "mvec: ";
+					PrintMove(move_vec[1]);
+					ListMoves(current_board, move_vec);
+					// move_vec = get_moves(current_board,rank,file);
+
+					// After printing moves, ask for new move:
+					cout << "Please enter move number, final square, or normal algebraic move: ";
+					string read_input;
+					cin >> read_input;
+					cout << "input is: " << read_input << endl;
+					try { // If int, read from vector list and return listed move
+						int n = stoi(read_input);
+						cout << "have int" << endl;
+						if (n > 0 && n <= move_vec.size()) {
+							return move_vec[stoi(read_input)-1];
+						}
+					} catch (logic_error &e) { // If not int, should be string of final square
+						cout << "not int" << endl;
+						if (regex_match(read_input,regex("[a-h][1-8]"))) {
+							int read_file = FileToInt(read_input.substr(0,1));
+							int read_rank = 8 - stoi(read_input.substr(1,1));
+							ChessMove read_move;
+							read_move = {{rank,file},{read_rank,read_file}};
+							
+	 						if (find(move_vec.begin(), move_vec.end(), read_move) != move_vec.end()) { // See if that move is in the list
+								cout << "move in list" << endl;
+								return read_move;
+							} else { // Otherwise fail to below
+								cout << "not in list" << endl;
+							}
+						}
+						// If not final square, assume it's some other move and try to parse (which might itself fail)
+						cout << "now here" << endl;
+						ChessMove t_move = ParseInput(current_board,read_input);
+						return t_move;
+					}					
+				} else { // Square occupied with wrong color
 					cout << "occupied wrong" << endl;
 				}
 			}
 		} else { // No match with regex, illegal move
 			cout << "No match with regex, illegal move." << endl;
 		}
-		cout << "Coords: " << start_rank << "," << start_file << " to:" << end_rank << "," << end_file << endl;
+		cout << "Coords: " << start_rank << "," << start_file << " to: " << end_rank << "," << end_file << endl;
 		parsed_move = PieceReach(current_board, piece, start_rank, start_file, end_rank, end_file);
 
 /*

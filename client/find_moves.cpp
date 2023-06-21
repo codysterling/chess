@@ -46,4 +46,12 @@ namespace move {
 
 	} // end function
 
+	vector<int[2]> GetPossibleMoves(board::ChessBoard current_board, int rank, int file) {
+		// For a square at rank/file on the board current_board, return a vector list of possible final positions
+
+		vector<int[2]> moves_list;
+
+		return moves_list;
+	}
+
 } // end namespace

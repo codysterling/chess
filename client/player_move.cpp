@@ -18,7 +18,6 @@ namespace move {
 		}
 		cout << ", please enter move:" << endl;
 		
-
 		while (cin) {
 			string read_move;
 			cin >> read_move;

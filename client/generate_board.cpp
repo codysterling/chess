@@ -2,102 +2,102 @@
 
 namespace board {
 
-	// struct ChessBoard { // Default board is a new board
-	// 	string squares[8][8] = {
-	// 		{"bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"},
-	// 		{"bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"},
-	// 		{"  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "},
-	// 		{"  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "},
-	// 		{"  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "},
-	// 		{"  ", "  ", "  ", "  ", "  ", "  ", "  ", "  "},
-	// 		{"wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"},
-	// 		{"wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"}
-	// 	};
-	// 	bool color = 0; // current move color: 0 = white, 1 = black
-	// 	int check = 2; // 0 = white in check, 1 = black in check, 2 = no check
-	// 	int checkmate = 2; // 0 = white has mate, 1 = black has mate, 2 = no mate
-	// 	int en_passant[2]; // store row/column of where en passant can happen
-	// 	int white_castle = 3; // Q-side: 1, K-side: 2, both: 3, neither: 0
-	// 	int black_castle = 3; // Q-side: 1, K-side: 2, both: 3, neither: 0
-	// }; // end struct
-
 	ChessBoard GenerateBoard(string fen_seq) {
 		ChessBoard start_board;
 
-		if (fen_seq.empty()) { // Blank input: return new board
-			return start_board;
-		} else { // (Probably legal) FEN sequence: turn into board
-			//// The '/' part breaks regex, probably parsing is bad overall, fix
-			// regex tr = reginex("[BKNPQR]");
-			// regex tr2 = regex("[bknpqr]");
-			int rank = 0;
-			int file = 0;
-			for (int i=0; i<fen_seq.length(); i++) {
-				char fen_char = fen_seq[i];
-				// cout << "char is " << &fen_char << endl;
+		regex fen_regex_pos = regex("^(([BKNPQRbknpqr1-8]+/){7}[BKNPQRbknpqr1-8]+).*$");
+		regex fen_regex_full = regex("^(([BKNPQRbknpqr1-8]+/){7}[BKNPQRbknpqr1-8]+)? ([wb])? ([KQkq]{1,4}|-)? (([a-h][1-8])|-).*");
+		smatch m;
 
-				if (fen_char == '/') {
-					rank += 1;
-					file = 0;
-				} else if (isdigit(fen_char)) {
-					fen_char -= '0'; // workaround for math stuff with char
-					for (int i=file; i<file+fen_char; i++) {
-						start_board.squares[rank][i] = "  ";
-					}
-					file += fen_char;
-				} else if (fen_char == toupper(fen_char)) {
-				// } else if (regex_match(&fen_char, tr)) {
-					// cout << "char matched upper" << endl;
-					start_board.squares[rank][file][0] = 'w';
-					start_board.squares[rank][file][1] = toupper(fen_char);
-					file += 1;
-				} else if (fen_char == tolower(fen_char)) {
-				// } else if (regex_match(&fen_char, tr2)) {
-					// cout << "char matched lower" << endl;
-					start_board.squares[rank][file][0] = 'b';
-					start_board.squares[rank][file][1] = toupper(fen_char);
-					file += 1;
-				}
+		if (regex_match(fen_seq,m,fen_regex_full)) { // Match full FEN regex
+			cout << "Board state imported from FEN:" << endl;
+			fen_seq = m.str(1);
+			// Importing color
+			if (m.str(3) == "w") {
+				start_board.color = 0;
+			} else if (m.str(3) == "b") {
+				start_board.color = 1;
 			}
+			// Importing castling
+			if (m.str(4).find("K") == string::npos) {
+				start_board.white_castle -= 2;
+			}
+			if (m.str(4).find("Q") == string::npos) {
+				start_board.white_castle -= 1;
+			}
+			if (m.str(4).find("k") == string::npos) {
+				start_board.black_castle -= 2;
+			}
+			if (m.str(4).find("q") == string::npos) {
+				start_board.black_castle -= 1;
+			}
+			// Importing en passant
+			if (regex_match(m.str(5),regex("[a-h][1-8]"))) {
+				int file = board::FileToInt(m.str(5).substr(0,1));
+				int rank = 8-stoi(m.str(5).substr(1,1));
+				start_board.en_passant[0] = rank;
+				start_board.en_passant[1] = file;
+			}
+		} else if (regex_match(fen_seq,m,fen_regex_pos)) { // Match pos FEN regex
+			cout << "Board position imported from FEN:" << endl;
+			fen_seq = m[1];
+		} else { // No regex match for position, return normal starting board
+			cout << "Starting a new game:" << endl;
 			return start_board;
 		}
-	} // end function
 
-	ChessBoard MakeMove(ChessBoard current_board, move::ChessMove given_move) {
+		// Parsing FEN position
+		int rank = 0;
+		int file = 0;
+		char fen_char;
+		for (int i=0; i<fen_seq.length(); i++) {
+			fen_char = fen_seq[i];
 
-		// Check castling move, assume that it's already been checked to be legal
-		if (current_board.squares[given_move.start[0]][given_move.start[1]] == "wK" && given_move.start[0] == 7 && given_move.start[1] == 4 && (given_move.end[1] == 2 || given_move.end[1] == 0)) { // White Queen-side
-			current_board.squares[7][4] = "  ";
-			current_board.squares[7][0] = "  ";
-			current_board.squares[7][2] = "wK";
-			current_board.squares[7][3] = "wR";
-			current_board.white_castle = 0;
-		} else if (current_board.squares[given_move.start[0]][given_move.start[1]] == "wK" && given_move.start[0] == 7 && given_move.start[1] == 4 && (given_move.end[1] == 6 || given_move.end[1] == 7)) { // White King-side
-			current_board.squares[7][4] = "  ";
-			current_board.squares[7][7] = "  ";
-			current_board.squares[7][6] = "wK";
-			current_board.squares[7][5] = "wR";
-			current_board.white_castle = 0;
-		} else if (current_board.squares[given_move.start[0]][given_move.start[1]] == "bK" && given_move.start[0] == 0 && given_move.start[1] == 4 && (given_move.end[1] == 2 || given_move.end[1] == 0)) { // Black Queen-side
-			current_board.squares[0][4] = "  ";
-			current_board.squares[0][0] = "  ";
-			current_board.squares[0][2] = "bK";
-			current_board.squares[0][3] = "bR";
-			current_board.black_castle = 0;
-		} else if (current_board.squares[given_move.start[0]][given_move.start[1]] == "bK" && given_move.start[0] == 0 && given_move.start[1] == 4 && (given_move.end[1] == 6 || given_move.end[1] == 7)) { // Black King-side
-			current_board.squares[0][4] = "  ";
-			current_board.squares[0][7] = "  ";
-			current_board.squares[0][6] = "bK";
-			current_board.squares[0][5] = "bR";
-			current_board.black_castle = 0;
-		} else { // Not castling, so do normal move
-			current_board.squares[given_move.end[0]][given_move.end[1]] = current_board.squares[given_move.start[0]][given_move.start[1]];
-			current_board.squares[given_move.start[0]][given_move.start[1]] = "  ";
+			if (fen_char == '/') {
+				rank += 1;
+				file = 0;
+			} else if (isdigit(fen_char)) {
+				fen_char -= '0'; // workaround for math stuff with char
+				for (int i=file; i<file+fen_char; i++) {
+					start_board.squares[rank][i] = "  ";
+				}
+				file += fen_char;
+			} else if (fen_char == toupper(fen_char)) {
+				start_board.squares[rank][file][0] = 'w';
+				start_board.squares[rank][file][1] = toupper(fen_char);
+				file += 1;
+			} else if (fen_char == tolower(fen_char)) {
+				start_board.squares[rank][file][0] = 'b';
+				start_board.squares[rank][file][1] = toupper(fen_char);
+				file += 1;
+			} else if (fen_char == ' ') {
+				break;
+			}
 		}
 
-		// Update color and return board
-		current_board.color = (current_board.color + 1)%2;
-		return(current_board);
+		// Basic castling checks from FEN position, in case not in FEN import
+		if (start_board.squares[7][4] != "wK") {
+			start_board.white_castle = 0;
+		} else {
+			if (start_board.squares[7][0] != "wR") {
+				start_board.white_castle = floor(start_board.white_castle/2)*2;
+			}
+			if (start_board.squares[7][7] != "wR") {
+				start_board.white_castle = start_board.white_castle%2;
+			}
+		}
+		if (start_board.squares[0][4] != "bK") {
+			start_board.black_castle = 0;
+		} else {
+			if (start_board.squares[0][0] != "bR") {
+				start_board.black_castle = floor(start_board.black_castle/2)*2;
+			}
+			if (start_board.squares[0][7] != "bR") {
+				start_board.black_castle = start_board.black_castle%2;
+			}
+		}
+
+		return start_board;
 	} // end function
 
 } // end namespace

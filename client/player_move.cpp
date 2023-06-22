@@ -2,7 +2,7 @@ namespace move {
 
 	board::ChessBoard PlayerMove(board::ChessBoard current_board) { // This is the main player move function
 
-		// clrscr();
+		clrscr();
 		cout << "Current board is:" << endl;
 		board::PrintBoardFull(current_board);
 		ChessMove parsed_move;
@@ -27,14 +27,11 @@ namespace move {
 				cout << "You have entered an illegal or unclear move.  Please enter a new one." << endl;
 				cin.clear(); cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			} else { // Otherwise good move, break to do move
-				cout << "Good move!" << endl;
-				PrintMove(parsed_move);
 				break;
 			}
 		}
 
 		current_board = board::MakeMove(current_board, parsed_move);
-		// board::PrintBoardFull(current_board);
 		return current_board;
 	} // end function
 

@@ -29,7 +29,7 @@ int main() {
 	cout << "Press Enter for a new game, otherwise input a path to a FEN file or the FEN sequence here." << endl;
 	string start_input;
 	// getline(cin, start_input);
-	start_input = "fen.txt"; //// faster testing of FEN input, remove later
+	start_input = "ch_fen.txt"; //// faster testing of FEN input, remove later
 	// start_input = ""; //// faster testing of blank input, remove later
 
 	board::ChessBoard current_board;

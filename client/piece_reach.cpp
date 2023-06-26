@@ -44,30 +44,6 @@ namespace move {
 			temp_move = {{8,8},{8,8}};
 		}
 
-		// Castling is its own logic, so we check it here
-
-
-		// // First check to make sure square isn't occupied by own color
-		// char current_square_color = current_board.squares[end_rank][end_file][0];
-		// cout << "Current square is: " << current_square_color << endl;
-		// if (current_square_color == move_color) {
-		// 	cout << "Square " << IntToFile(end_file) << 8-end_rank << " is already occupied with your own color!" << endl;
-		// 	return temp_move;
-		// }
-
-		// int n_pieces_can_reach = 0;
-		// if (piece == "P") {
-		// 	if (current_square_color == take_color) { // searching for diagonal moves
-		// 		if (move_color == 'w') {
-		// 			cout << "here with white" << endl;
-		// 		}
-		// 	}
-		// }
-
-		// temp_move.start[0] = 6;
-		// temp_move.start[1] = 4;
-		// temp_move.end[0] = end_rank;
-		// temp_move.end[1] = end_file;
 		return temp_move;
 
 	} // end function

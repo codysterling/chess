@@ -112,7 +112,7 @@ namespace move {
 						// If not final square, assume it's some other move and try to parse (which might itself fail)
 						ChessMove t_move = ParseInput(current_board,read_input);
 						return t_move;
-					}					
+					}
 				} else {
 					// Square occupied with wrong color
 				}
@@ -128,22 +128,6 @@ namespace move {
 		if (regex_match(promstr,regex("[BNRQ]"))) {
 			parsed_move.promotion = promotion;
 		}
-/*
-		input: Na4
-		a2
-
-		char[0] == N
-		figure out that our knights are at C3 (2,4) and G1 (0,6)
-		big_move_func(2,4) + big_move_func(0,6) => [[2,4] => [0,3],...]
-		now we check that list for a4 final position (0,3)
-		-- write function to check if there is a knight that can reach a4 (basically inverse of above function)
-		*/
-
-		//// remove later
-		// parsed_move.start[0] = 6;
-		// parsed_move.start[1] = 0;
-		// parsed_move.end[0] = 5;
-		// parsed_move.end[1] = 0;
 
 		return parsed_move;
 	} // end function

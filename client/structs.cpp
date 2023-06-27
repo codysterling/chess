@@ -16,7 +16,7 @@ namespace board {
 			{"wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"},
 			{"wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"}
 		};
-		bool color = 0; // current move color: 0 = white, 1 = black
+		int color = 0; // current move color: 0 = white, 1 = black
 		int check = 2; // 0 = white in check, 1 = black in check, 2 = no check
 		int checkmate = 2; // 0 = white has mate, 1 = black has mate, 2 = no mate
 		int en_passant[2] = {8, 8}; // store row/column of where en passant can happen

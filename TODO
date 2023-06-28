@@ -1,0 +1,5 @@
+# TODO
+
+- add resign possibility (another regex in ParseInput?)
+- add checkmate checks (end of PlayerMove/EngineMove functions?)
+- add engine functions (to start, choose random move?)

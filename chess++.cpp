@@ -10,18 +10,18 @@ using namespace std;
 
 // Include other functions
 //// The order in which these are loaded is important, hence the structs file first.  We should think about redoing/ordering or something
-#include "client/structs.cpp"
-#include "client/file_funcs.cpp"
-#include "client/list_moves.cpp"
-#include "client/make_move.cpp"
-#include "client/print_board.cpp"
-#include "client/get_possible_moves.cpp"
-#include "client/check_check.cpp"
-#include "client/piece_reach.cpp"
-#include "client/parse_input.cpp"
-#include "client/player_move.cpp"
-#include "engine/engine_move.cpp"
-#include "client/generate_board.cpp"
+#include "functions/structs.cpp"
+#include "functions/file_funcs.cpp"
+#include "functions/generate_board.cpp"
+#include "functions/list_moves.cpp"
+#include "functions/print_board.cpp"
+#include "functions/get_possible_moves.cpp"
+#include "functions/check_check.cpp"
+#include "functions/make_move.cpp"
+#include "functions/find_legal_move.cpp"
+#include "functions/parse_input.cpp"
+#include "functions/player_move.cpp"
+#include "functions/engine_move.cpp"
 
 // Run program
 int main()
@@ -31,10 +31,10 @@ int main()
 	cout << "Press Enter for a new game, otherwise input a path to a FEN file or the FEN sequence here." << endl;
 	string start_input;
 	// getline(cin, start_input);
-	start_input = "ch_fen2.txt"; //// faster testing of FEN input, remove later
+	start_input = "ch_fen.txt"; //// faster testing of FEN input, remove later
 	// start_input = ""; //// faster testing of blank input, remove later
 
-	board::ChessBoard current_board;
+	ChessBoard current_board;
 	if (filesystem::exists(start_input))
 	{ // Check if we input a file
 		cout << "FEN file \"" + start_input + "\" opened, importing FEN." << endl;
@@ -42,20 +42,20 @@ int main()
 		string fen_input;
 		fen_file.open(start_input);
 		getline(fen_file, fen_input);
-		current_board = board::GenerateBoard(fen_input);
+		current_board = GenerateBoard(fen_input);
 	}
 	else
 	{ // No file, or doesn't exist
-		current_board = board::GenerateBoard("");
+		current_board = GenerateBoard("");
 	}
 
 	cout << endl;
-	board::PrintBoardFull(current_board);
+	PrintBoardFull(current_board);
 	cout << endl;
 
 	// Set both move functions here for 2P, then change one to engine if needed
-	auto white_move = move::PlayerMove;
-	auto black_move = move::PlayerMove;
+	auto white_move = PlayerMove;
+	auto black_move = PlayerMove;
 
 	// Check vs. engine or 2 player
 	cout << "Would you like to play vs. the engine (1) or a 2-player game (2)?" << endl;
@@ -78,14 +78,14 @@ int main()
 				{
 					cout << endl
 						 << "Player is white, engine is black." << endl;
-					black_move = move::EngineMove;
+					black_move = EngineMove;
 					break;
 				}
 				else if (regex_match(player_color, regex("[Bb](?:[Ll](?:[Aa](?:[Cc](?:[Kk])?)?)?)?")))
 				{
 					cout << endl
 						 << "Engine is white, player is black." << endl;
-					white_move = move::EngineMove;
+					white_move = EngineMove;
 					break;
 				}
 				else if (regex_match(player_color, regex("[Rr](?:[Aa](?:[Nn](?:[Dd](?:[Oo](?:[Mm])?)?)?)?)?")))
@@ -95,13 +95,13 @@ int main()
 					{ // Player is white
 						cout << endl
 							 << "Player is white, engine is black." << endl;
-						black_move = move::EngineMove;
+						black_move = EngineMove;
 					}
 					else
 					{ // Player is black
 						cout << endl
 							 << "Player is black, engine is white." << endl;
-						white_move = move::EngineMove;
+						white_move = EngineMove;
 					}
 					break;
 				}
@@ -154,7 +154,7 @@ int main()
 	}
 	cout << "Final position:" << endl
 		 << endl;
-	board::PrintBoard(current_board);
+	PrintBoard(current_board);
 
 	return 0;
 } // end main
